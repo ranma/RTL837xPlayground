@@ -104,6 +104,7 @@ __code uint8_t * __code greeting = "\nA minimal prompt to explore the RTL8372:\n
 __code uint8_t * __code hex = "0123456789abcdef";
 
 __xdata uint8_t flash_buf[FLASH_BUF_SIZE];
+__xdata uint8_t xstack[XSTACK_SIZE];
 
 // NIC buffers for packet RX/TX
 __xdata uint8_t rx_headers[16]; // Packet header(s) on RX
@@ -1952,9 +1953,8 @@ void bootloader(void)
 	CKCON = 0;	// Initial Clock configuration
 	SFR_97 = 0;	// HADDR?
 
-	// Set in managed mode:
-	SFR_b9 = 0x00;
-	SFR_ba = 0x80;
+	// Set up stack in XRAM.
+	XSTACK_ADDR = (uint16_t)&xstack[sizeof(xstack)];
 
 	// Disable all interrupts (global and individually) by setting IE register (SFR A8) to 0
 	IE = 0;

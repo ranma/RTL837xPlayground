@@ -766,6 +766,38 @@ void print_sw_version(void) __banked {
 	write_char('\n');
 }
 
+// Show stacks
+void print_stack(void) __banked {
+	uint8_t i = 0;
+	extern __idata uint8_t _start__stack;
+	__idata uint8_t *istack = &_start__stack;
+	extern __xdata uint8_t xstack[XSTACK_SIZE];
+	__xdata uint8_t *xstackptr = xstack;
+
+	print_string("IRAM stack:\n");
+	while (istack) {
+		print_byte(*istack);
+		write_char(' ');
+		istack++;
+		if (i++ >= 16) {
+			i = 0;
+			write_char('\n');
+		}
+	}
+	write_char('\n');
+	print_string("XRAM stack:\n");
+	i = 0;
+	for (uint16_t j = 0; j < XSTACK_SIZE; j++) {
+		print_byte(*xstackptr);
+		write_char(' ');
+		xstackptr++;
+		if (i++ >= 16) {
+			i = 0;
+			write_char('\n');
+		}
+	}
+	write_char('\n');
+}
 
 // Identify command
 void cmd_parser(void) __banked
@@ -941,6 +973,8 @@ void cmd_parser(void) __banked
 			parse_eee();
 		} else if (cmd_compare(0, "version")) {
 			print_sw_version();
+		} else if (cmd_compare(0, "stack")) {
+			print_stack();
 		} else if (cmd_compare(0, "time")) {
 			print_string("  Tick counter: "); print_long(ticks); print_string("   Sec Counter: ");
 			reg_read_m(RTL837X_REG_SEC_COUNTER);

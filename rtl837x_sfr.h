@@ -48,8 +48,15 @@ __sfr __at(0xbb) SFR_BANK_RET;
 __sfr __at(0x8e) CKCON;
 
 __sfr __at(0x97) SFR_97;	// HADDR?
-__sfr __at(0xb9) SFR_b9;
-__sfr __at(0xba) SFR_ba;
+
+// XRAM stack peripheral
+// Stack grows down:
+// - Address decrements before data write
+// - Address increments after data read
+__sfr __at(0xb9) XSTACK_ADDRL;
+__sfr __at(0xba) XSTACK_ADDRH;
+__sfr16 __at(0xbab9) XSTACK_ADDR;
+__sfr __at(0xbb) XSTACK_DATA;	// read to pop, write to push
 
 // Clause 22 PHY access ???
 __sfr __at(0x93) SFR_93;
